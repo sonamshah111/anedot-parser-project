@@ -6,10 +6,14 @@ craiglist_raw_html = Nokogiri::HTML.parse(open('https://seattle.craigslist.org/s
 # Step3 : Parse https://seattle.craigslist.org/search/cta?query=jeep and print raw results
 #print craiglist_raw_html 
 
-# Step4: Print each item with Date - Title 
-puts "Date - Title"
+# Step5: Print each item with Model Year - Date - Title 
+puts "Model Year -  Date       -       Title"
+100.times { print "-" }
+print "\n"
 craiglist_raw_html.css('div.result-info').each do |car_detail|
   date_info = Date.parse car_detail.css('time')[0]['datetime'] 
-  puts date_info.to_s + " - " + car_detail.css('h3.result-heading').text
-end	
+  model = car_detail.css('h3.result-heading').text.scan(/\b\d{4}\b/).first ? car_detail.css('h3.result-heading').text.scan(/\b\d{4}\b/).first : ""
+  title = car_detail.css('h3.result-heading').text.strip! #removing extra space in title
+  puts model + "       -  " + date_info.to_s + " -    " + title.gsub(model, "")
+ end	
 
